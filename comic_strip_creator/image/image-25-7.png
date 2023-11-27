@@ -1,0 +1,1 @@
+{"error":"Provide either `prompt` or `prompt_embeds`. Cannot leave both `prompt` and `prompt_embeds` undefined."}
