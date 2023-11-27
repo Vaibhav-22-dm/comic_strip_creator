@@ -12,28 +12,27 @@
 <body>
   <h1 class="h1 text-center py-3">Welcome to Dashtoon</h1>
   <div class="container d-flex justify-content-between">
-    <form method="post" {% if comicstrip_id %} class="col-4" {% else %} class="row row-cols-3 justify-content-center" {%
-      endif %}>
+    <form method="post" class="col-4" class="row row-cols-3 justify-content-center">
       {% csrf_token %}
       {% for i in '0123456789'|make_list %}
       <div class="form-group">
-        <label class="form-label">Describe the comic panel {{ i|add:1 }}</label>
+        <label class="form-label">Prompt {{ i|add:1 }}</label>
         <textarea class="form-control" name="prompt-{{ i|add:1 }}"
           placeholder="Describe the comic strip {{ i|add:1 }}"></textarea>
       </div>
       {% endfor %}
       <button type="submit" class="btn btn-success my-2 w-100">Generate Comic Strip</button>
     </form>
-    {% if comicstrip_id %}
     <div class="col-7 border border-5 rounded-5">
       <div class="h3 w-100 text-center">Comic Strip {{ comicstrip_id }}</div>
+      {% if comicstrip_id %}
       <div class="row row-cols-3 justify-content-center p-3">
         {% for panel in panels %}
         <img src="{{ panel.image.url }}" alt="{{ panel.prompt }}" class="col p-2" />
         {% endfor %}
       </div>
+      {% endif %}
     </div>
-    {% endif %}
     {% if error %}
     <div class="text-danger">{{ error }}</div>
     {% endif %}
