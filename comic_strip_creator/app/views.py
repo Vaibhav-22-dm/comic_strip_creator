@@ -6,6 +6,7 @@ from .models import *
 from django.core.files.base import ContentFile
 
 API_URL = "https://xdwvg9no7pefghrn.us-east-1.aws.endpoints.huggingface.cloud"
+
 headers = {
     "Accept": "image/png",
     "Authorization": "Bearer VknySbLLTUjbxXAXCjyfaFIPwUTCeRXbFSOjwRiCxsxFyhbnGjSFalPKrpvvDAaPVzWEevPljilLVDBiTzfIbWFdxOkYJxnOPoHhkkVGzAknaOulWggusSFewzpqsNWM",
@@ -16,21 +17,12 @@ def query(payload):
 	response = requests.post(API_URL, headers=headers, json=payload)
 	return response.content
 
-
 # Create your views here.
 def index(request):
     if request.method == "POST":
         prompts = [request.POST.get(f"prompt-{i}") for i in range(10)]
         comicstrip = ComicStrip.objects.create()
         panels = []
-        # with concurrent.futures.ThreadPoolExecutor(max_workers=10) as executor:
-        #     processes = [
-        #         executor.submit(
-        #             requests.post, API_URL, headers=headers, json={"inputs": prompt}
-        #         )
-        #         for prompt in prompts
-        #     ]
-            # for i, process in enumerate(concurrent.futures.as_completed(processes)):
         for prompt in prompts:
             try:
                 image_bytes = query({
@@ -47,7 +39,7 @@ def index(request):
                 )
                 panels.append(panel)
             except Exception as e:
-                print(str(e))
+                return render(request,  "app/index.html", {"error": "Error occured while generating the images"})
         return render(
             request,
             "app/index.html",
